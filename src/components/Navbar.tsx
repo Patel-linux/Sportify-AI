@@ -34,7 +34,10 @@ export default function Navbar({ user, profile }: NavbarProps) {
             >
               <Trophy size={20} />
             </motion.div>
-            <span className="text-xl font-bold tracking-tighter text-stone-900">SPORTIFY AI</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl font-bold tracking-tighter text-stone-900">SPORTIFY AI</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 bg-stone-100 text-stone-500 rounded border border-stone-200">v1.0.0</span>
+            </div>
           </div>
 
           <div className="hidden md:flex flex-1 max-w-md mx-8">
