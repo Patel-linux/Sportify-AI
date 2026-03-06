@@ -1,0 +1,60 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A sports equipment product",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Product name" },
+        "brand": { "type": "string", "description": "Brand name" },
+        "category": { "type": "string", "description": "Sports category (e.g., Cricket, Football)" },
+        "price": { "type": "number", "description": "Price in USD" },
+        "rating": { "type": "number", "description": "Average rating (1-5)" },
+        "reviewsCount": { "type": "integer", "description": "Number of reviews" },
+        "description": { "type": "string", "description": "Product description" },
+        "imageUrl": { "type": "string", "description": "URL to product image" },
+        "features": { "type": "array", "items": { "type": "string" }, "description": "Key features" }
+      },
+      "required": ["name", "brand", "category", "price", "rating"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account information",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "favorites": { "type": "array", "items": { "type": "string" }, "description": "List of product IDs" },
+        "preferences": { "type": "array", "items": { "type": "string" }, "description": "Preferred sports categories" }
+      },
+      "required": ["email"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "User purchase history",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "price": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "productId", "price", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of sports equipment"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles and settings"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Purchase history"
+    }
+  }
+}

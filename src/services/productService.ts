@@ -1,0 +1,85 @@
+import { collection, getDocs, addDoc, query, where, limit, doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { db } from "../firebase";
+import { Product } from "../types";
+
+const PRODUCTS_COLLECTION = "products";
+
+export const getProducts = async (category?: string) => {
+  const productsRef = collection(db, PRODUCTS_COLLECTION);
+  let q = query(productsRef);
+  
+  if (category) {
+    q = query(productsRef, where("category", "==", category));
+  }
+  
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+};
+
+export const getProductById = async (id: string) => {
+  const docRef = doc(db, PRODUCTS_COLLECTION, id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() } as Product;
+  }
+  return null;
+};
+
+export const seedProducts = async () => {
+  const productsRef = collection(db, PRODUCTS_COLLECTION);
+  const snapshot = await getDocs(query(productsRef, limit(1)));
+  
+  if (snapshot.empty) {
+    const initialProducts = [
+      {
+        name: "Pro Run 2000",
+        brand: "Speedster",
+        category: "Running",
+        price: 120,
+        rating: 4.8,
+        reviewsCount: 150,
+        description: "High-performance running shoes with advanced cushioning.",
+        imageUrl: "https://picsum.photos/seed/shoes/400/400",
+        features: ["Breathable mesh", "Responsive foam", "Durable rubber sole"]
+      },
+      {
+        name: "Master Blaster Willow",
+        brand: "CricketPro",
+        category: "Cricket",
+        price: 250,
+        rating: 4.9,
+        reviewsCount: 85,
+        description: "Grade 1 English Willow bat for professional play.",
+        imageUrl: "https://picsum.photos/seed/cricket/400/400",
+        features: ["Large sweet spot", "Lightweight pickup", "Premium grip"]
+      },
+      {
+        name: "Elite Strike Ball",
+        brand: "GoalMaster",
+        category: "Football",
+        price: 45,
+        rating: 4.5,
+        reviewsCount: 200,
+        description: "FIFA Quality Pro certified match ball.",
+        imageUrl: "https://picsum.photos/seed/football/400/400",
+        features: ["Textured surface", "High air retention", "Consistent flight"]
+      },
+      {
+        name: "PowerLift Dumbbells (Set of 2)",
+        brand: "IronCore",
+        category: "Gym",
+        price: 80,
+        rating: 4.7,
+        reviewsCount: 320,
+        description: "Rubber-coated hex dumbbells for home and gym use.",
+        imageUrl: "https://picsum.photos/seed/gym/400/400",
+        features: ["Anti-roll design", "Comfortable grip", "Floor protection"]
+      }
+    ];
+
+    for (const product of initialProducts) {
+      await addDoc(productsRef, product);
+    }
+    console.log("Products seeded successfully");
+  }
+};
