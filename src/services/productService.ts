@@ -1,6 +1,7 @@
 import { collection, getDocs, addDoc, query, where, limit, doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from "../firebase";
 import { Product } from "../types";
+import { handleFirestoreError, OperationType } from "./firestoreError";
 
 const PRODUCTS_COLLECTION = "products";
 
@@ -12,17 +13,27 @@ export const getProducts = async (category?: string) => {
     q = query(productsRef, where("category", "==", category));
   }
   
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+  try {
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, PRODUCTS_COLLECTION);
+    return [];
+  }
 };
 
 export const getProductById = async (id: string) => {
   const docRef = doc(db, PRODUCTS_COLLECTION, id);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() } as Product;
+  try {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Product;
+    }
+    return null;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.GET, `${PRODUCTS_COLLECTION}/${id}`);
+    return null;
   }
-  return null;
 };
 
 export const seedProducts = async () => {
@@ -97,20 +108,29 @@ export const seedProducts = async () => {
     }
   ];
 
-  for (const product of initialProducts) {
-    const q = query(productsRef, where("name", "==", product.name));
-    const querySnapshot = await getDocs(q);
-    
-    if (querySnapshot.empty) {
-      await addDoc(productsRef, product);
+  try {
+    for (const product of initialProducts) {
+      const q = query(productsRef, where("name", "==", product.name));
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        await addDoc(productsRef, product);
+      } else {
+        // Update existing product price and rating
+        const existingDoc = querySnapshot.docs[0];
+        await updateDoc(doc(db, PRODUCTS_COLLECTION, existingDoc.id), {
+          price: product.price,
+          rating: product.rating
+        });
+      }
+    }
+    console.log("Products seeded/updated successfully");
+  } catch (error) {
+    // Gracefully handle permission errors during seeding
+    if (error instanceof Error && error.message.includes("insufficient permissions")) {
+      console.warn("Seeding skipped: Current user does not have permission to modify products.");
     } else {
-      // Update existing product price and rating
-      const existingDoc = querySnapshot.docs[0];
-      await updateDoc(doc(db, PRODUCTS_COLLECTION, existingDoc.id), {
-        price: product.price,
-        rating: product.rating
-      });
+      console.error("Seeding failed:", error);
     }
   }
-  console.log("Products seeded/updated successfully");
 };

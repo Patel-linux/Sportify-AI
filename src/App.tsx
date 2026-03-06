@@ -3,6 +3,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { seedProducts } from './services/productService';
+import { handleFirestoreError, OperationType } from './services/firestoreError';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
@@ -23,20 +24,24 @@ export default function App() {
       setUser(firebaseUser);
       if (firebaseUser) {
         const userDoc = doc(db, 'users', firebaseUser.uid);
-        const userSnap = await getDoc(userDoc);
-        
-        if (userSnap.exists()) {
-          setProfile(userSnap.data() as UserProfile);
-        } else {
-          const newProfile: UserProfile = {
-            uid: firebaseUser.uid,
-            displayName: firebaseUser.displayName || 'Athlete',
-            email: firebaseUser.email || '',
-            favorites: [],
-            preferences: []
-          };
-          await setDoc(userDoc, newProfile);
-          setProfile(newProfile);
+        try {
+          const userSnap = await getDoc(userDoc);
+          
+          if (userSnap.exists()) {
+            setProfile(userSnap.data() as UserProfile);
+          } else {
+            const newProfile: UserProfile = {
+              uid: firebaseUser.uid,
+              displayName: firebaseUser.displayName || 'Athlete',
+              email: firebaseUser.email || '',
+              favorites: [],
+              preferences: []
+            };
+            await setDoc(userDoc, newProfile);
+            setProfile(newProfile);
+          }
+        } catch (error) {
+          handleFirestoreError(error, OperationType.WRITE, `users/${firebaseUser.uid}`);
         }
       } else {
         setProfile(null);
