@@ -2,6 +2,7 @@ import React from 'react';
 import { Product } from '../types';
 import { Star, Heart, ShoppingBag } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useCart } from '../context/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -9,6 +10,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, isFavorite }: ProductCardProps) {
+  const { addToCart } = useCart();
+
   return (
     <motion.div
       layout
@@ -26,9 +29,12 @@ export default function ProductCard({ product, isFavorite }: ProductCardProps) {
           referrerPolicy="no-referrer"
         />
         <div className="absolute top-3 right-3">
-          <button className={`p-2 rounded-full backdrop-blur-md transition-all ${
-            isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 text-stone-400 hover:text-red-500'
-          }`}>
+          <button 
+            onClick={() => addToCart(product)}
+            className={`p-2 rounded-full backdrop-blur-md transition-all ${
+              isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 text-stone-400 hover:text-red-500'
+            }`}
+          >
             <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
           </button>
         </div>
@@ -53,7 +59,10 @@ export default function ProductCard({ product, isFavorite }: ProductCardProps) {
         
         <div className="flex items-center justify-between">
           <span className="text-xl font-black text-stone-900">${product.price}</span>
-          <button className="bg-stone-900 text-white p-2 rounded-lg hover:bg-emerald-500 transition-colors active:scale-90">
+          <button 
+            onClick={() => addToCart(product)}
+            className="bg-stone-900 text-white p-2 rounded-lg hover:bg-emerald-500 transition-colors active:scale-90"
+          >
             <ShoppingBag size={18} />
           </button>
         </div>

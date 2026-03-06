@@ -28,6 +28,10 @@ export interface Order {
   timestamp: string;
 }
 
+export interface CartItem extends Product {
+  quantity: number;
+}
+
 export const CATEGORIES = [
   "Running",
   "Cricket",

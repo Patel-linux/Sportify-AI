@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 import { UserProfile } from '../types';
 import { Trophy, ShoppingCart, User as UserIcon, LogOut, Search } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useCart } from '../context/CartContext';
 
 interface NavbarProps {
   user: User | null;
@@ -12,6 +13,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ user, profile }: NavbarProps) {
+  const { cartCount } = useCart();
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [loginError, setLoginError] = React.useState<string | null>(null);
 
@@ -77,7 +79,11 @@ export default function Navbar({ user, profile }: NavbarProps) {
           <div className="flex items-center gap-6">
             <button className="text-stone-600 hover:text-emerald-600 transition-colors relative">
               <ShoppingCart size={24} />
-              <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </button>
 
             {user ? (
