@@ -45,6 +45,7 @@ export default function ProductCard({ product, isFavorite }: ProductCardProps) {
           <div className="flex items-center gap-1">
             <Star size={12} className="text-yellow-400 fill-yellow-400" />
             <span className="text-xs font-bold">{product.rating}</span>
+            <span className="text-[10px] text-stone-400 font-medium">/10</span>
           </div>
         </div>
         <h3 className="font-bold text-stone-900 mb-2 line-clamp-1">{product.name}</h3>

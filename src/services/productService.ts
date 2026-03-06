@@ -34,7 +34,7 @@ export const seedProducts = async () => {
       brand: "Speedster",
       category: "Running",
       price: 135,
-      rating: 4.8,
+      rating: 9.6,
       reviewsCount: 150,
       description: "High-performance running shoes with advanced cushioning.",
       imageUrl: "https://picsum.photos/seed/shoes/400/400",
@@ -45,7 +45,7 @@ export const seedProducts = async () => {
       brand: "Speedster",
       category: "Running",
       price: 150,
-      rating: 4.7,
+      rating: 9.4,
       reviewsCount: 95,
       description: "Rugged trail running shoes for all-terrain performance.",
       imageUrl: "https://picsum.photos/seed/trail/400/400",
@@ -56,7 +56,7 @@ export const seedProducts = async () => {
       brand: "Nimbus",
       category: "Running",
       price: 160,
-      rating: 4.9,
+      rating: 9.8,
       reviewsCount: 210,
       description: "Ultra-lightweight marathon shoes with carbon plate technology.",
       imageUrl: "https://picsum.photos/seed/cloud/400/400",
@@ -67,7 +67,7 @@ export const seedProducts = async () => {
       brand: "CricketPro",
       category: "Cricket",
       price: 275,
-      rating: 4.9,
+      rating: 9.8,
       reviewsCount: 85,
       description: "Grade 1 English Willow bat for professional play.",
       imageUrl: "https://picsum.photos/seed/cricket/400/400",
@@ -78,7 +78,7 @@ export const seedProducts = async () => {
       brand: "GoalMaster",
       category: "Football",
       price: 55,
-      rating: 4.5,
+      rating: 9.0,
       reviewsCount: 200,
       description: "FIFA Quality Pro certified match ball.",
       imageUrl: "https://picsum.photos/seed/football/400/400",
@@ -89,7 +89,7 @@ export const seedProducts = async () => {
       brand: "IronCore",
       category: "Gym",
       price: 95,
-      rating: 4.7,
+      rating: 9.4,
       reviewsCount: 320,
       description: "Rubber-coated hex dumbbells for home and gym use.",
       imageUrl: "https://picsum.photos/seed/gym/400/400",
@@ -104,10 +104,11 @@ export const seedProducts = async () => {
     if (querySnapshot.empty) {
       await addDoc(productsRef, product);
     } else {
-      // Update existing product price
+      // Update existing product price and rating
       const existingDoc = querySnapshot.docs[0];
       await updateDoc(doc(db, PRODUCTS_COLLECTION, existingDoc.id), {
-        price: product.price
+        price: product.price,
+        rating: product.rating
       });
     }
   }
