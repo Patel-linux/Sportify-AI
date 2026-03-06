@@ -12,12 +12,29 @@ interface NavbarProps {
 }
 
 export default function Navbar({ user, profile }: NavbarProps) {
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const [loginError, setLoginError] = React.useState<string | null>(null);
+
   const handleLogin = async () => {
+    if (isLoggingIn) return;
+    
+    setIsLoggingIn(true);
+    setLoginError(null);
     const provider = new GoogleAuthProvider();
+    
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      if (error.code === 'auth/popup-blocked') {
+        setLoginError("Popup blocked! Please allow popups for this site to sign in.");
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        setLoginError("Login cancelled. Please try again.");
+      } else {
+        setLoginError("Login failed. Please check your connection and try again.");
+      }
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -25,6 +42,12 @@ export default function Navbar({ user, profile }: NavbarProps) {
 
   return (
     <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-stone-200">
+      {loginError && (
+        <div className="bg-red-500 text-white text-xs py-2 px-4 text-center animate-in slide-in-from-top duration-300">
+          {loginError}
+          <button onClick={() => setLoginError(null)} className="ml-2 font-bold underline">Dismiss</button>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-2">
@@ -74,9 +97,17 @@ export default function Navbar({ user, profile }: NavbarProps) {
             ) : (
               <button 
                 onClick={handleLogin}
-                className="bg-stone-900 text-white px-6 py-2 rounded-full font-medium hover:bg-stone-800 transition-all active:scale-95"
+                disabled={isLoggingIn}
+                className="bg-stone-900 text-white px-6 py-2 rounded-full font-medium hover:bg-stone-800 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Sign In
+                {isLoggingIn ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Signing In...
+                  </>
+                ) : (
+                  'Sign In'
+                )}
               </button>
             )}
           </div>

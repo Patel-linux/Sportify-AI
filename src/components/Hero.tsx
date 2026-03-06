@@ -2,7 +2,12 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Zap, ShieldCheck, Star } from 'lucide-react';
 
-export default function Hero() {
+interface HeroProps {
+  onShopNow?: () => void;
+  onViewCategories?: () => void;
+}
+
+export default function Hero({ onShopNow, onViewCategories }: HeroProps) {
   return (
     <div className="relative overflow-hidden rounded-3xl bg-stone-900 text-white min-h-[500px] flex items-center">
       {/* Background Pattern */}
@@ -27,10 +32,16 @@ export default function Hero() {
             Discover elite sports equipment curated by AI. High-rated, athlete-tested, and performance-driven.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-emerald-500 hover:bg-emerald-400 text-stone-900 px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all active:scale-95">
+            <button 
+              onClick={onShopNow}
+              className="bg-emerald-500 hover:bg-emerald-400 text-stone-900 px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all active:scale-95"
+            >
               Shop Now <ArrowRight size={20} />
             </button>
-            <button className="bg-stone-800 hover:bg-stone-700 text-white px-8 py-4 rounded-xl font-bold transition-all border border-stone-700">
+            <button 
+              onClick={onViewCategories}
+              className="bg-stone-800 hover:bg-stone-700 text-white px-8 py-4 rounded-xl font-bold transition-all border border-stone-700 active:scale-95"
+            >
               View Categories
             </button>
           </div>

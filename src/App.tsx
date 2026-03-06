@@ -69,9 +69,12 @@ export default function App() {
       <Navbar user={user} profile={profile} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Hero />
+        <Hero 
+          onShopNow={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
+          onViewCategories={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
+        />
         
-        <section className="mt-12">
+        <section id="shop" className="mt-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold tracking-tight">Featured Equipment</h2>
           </div>
