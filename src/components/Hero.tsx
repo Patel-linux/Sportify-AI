@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Zap, ShieldCheck, Star } from 'lucide-react';
+import { ArrowRight, Zap, ShieldCheck, Star, Activity } from 'lucide-react';
 
 interface HeroProps {
   onShopNow?: () => void;
@@ -40,9 +40,10 @@ export default function Hero({ onShopNow, onViewCategories }: HeroProps) {
             </button>
             <button 
               onClick={onViewCategories}
-              className="bg-stone-800 hover:bg-stone-700 text-white px-8 py-4 rounded-xl font-bold transition-all border border-stone-700 active:scale-95"
+              className="bg-stone-800 hover:bg-stone-700 text-white px-8 py-4 rounded-xl font-bold transition-all border border-stone-700 active:scale-95 flex items-center gap-2"
             >
-              View Categories
+              <Activity size={20} className="text-emerald-500" />
+              AI Gear Lab
             </button>
           </div>
         </motion.div>

@@ -105,6 +105,28 @@ export const seedProducts = async () => {
       description: "Rubber-coated hex dumbbells for home and gym use.",
       imageUrl: "https://picsum.photos/seed/gym/400/400",
       features: ["Anti-roll design", "Comfortable grip", "Floor protection"]
+    },
+    {
+      name: "Court King Pro",
+      brand: "AceSports",
+      category: "Tennis",
+      price: 210,
+      rating: 9.7,
+      reviewsCount: 110,
+      description: "Professional grade tennis racket with vibration dampening.",
+      imageUrl: "https://picsum.photos/seed/tennis/400/400",
+      features: ["Graphite frame", "Large head size", "Balanced weight"]
+    },
+    {
+      name: "Hoop Master 5",
+      brand: "DunkIt",
+      category: "Basketball",
+      price: 145,
+      rating: 9.5,
+      reviewsCount: 180,
+      description: "High-top basketball shoes with superior ankle support.",
+      imageUrl: "https://picsum.photos/seed/basketball/400/400",
+      features: ["Air cushion", "Non-slip grip", "Breathable fabric"]
     }
   ];
 
