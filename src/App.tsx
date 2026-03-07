@@ -10,6 +10,7 @@ import ProductGrid from './components/ProductGrid';
 import Chatbot from './components/Chatbot';
 import GearLab from './components/GearLab';
 import LiveFeed from './components/LiveFeed';
+import ProfilePage from './components/ProfilePage';
 import { UserProfile } from './types';
 import { useCart } from './context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -19,6 +20,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<'home' | 'profile'>('home');
 
   useEffect(() => {
     // Seed initial data
@@ -71,24 +73,37 @@ export default function App() {
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-900">
       <LiveFeed />
-      <Navbar user={user} profile={profile} />
+      <Navbar user={user} profile={profile} onNavigate={(v) => setView(v)} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Hero 
-          onShopNow={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-          onViewCategories={() => document.getElementById('gearlab')?.scrollIntoView({ behavior: 'smooth' })}
-        />
-        
-        <div id="gearlab">
-          <GearLab onAddToCart={addToCart} />
-        </div>
+        <AnimatePresence mode="wait">
+          {view === 'home' ? (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Hero 
+                onShopNow={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
+                onViewCategories={() => document.getElementById('gearlab')?.scrollIntoView({ behavior: 'smooth' })}
+              />
+              
+              <div id="gearlab">
+                <GearLab onAddToCart={addToCart} />
+              </div>
 
-        <section id="shop" className="mt-12">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold tracking-tight">Featured Equipment</h2>
-          </div>
-          <ProductGrid user={user} profile={profile} />
-        </section>
+              <section id="shop" className="mt-12">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-3xl font-bold tracking-tight">Featured Equipment</h2>
+                </div>
+                <ProductGrid user={user} profile={profile} />
+              </section>
+            </motion.div>
+          ) : (
+            profile && <ProfilePage profile={profile} onBack={() => setView('home')} />
+          )}
+        </AnimatePresence>
       </main>
 
       <Chatbot />

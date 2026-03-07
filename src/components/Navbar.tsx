@@ -10,9 +10,10 @@ import { useCart } from '../context/CartContext';
 interface NavbarProps {
   user: User | null;
   profile: UserProfile | null;
+  onNavigate: (view: 'home' | 'profile') => void;
 }
 
-export default function Navbar({ user, profile }: NavbarProps) {
+export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
   const { cartCount } = useCart();
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [loginError, setLoginError] = React.useState<string | null>(null);
@@ -52,7 +53,10 @@ export default function Navbar({ user, profile }: NavbarProps) {
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => onNavigate('home')}
+          >
             <motion.div 
               whileHover={{ scale: 1.1, rotate: 10 }}
               className="bg-emerald-500 p-2 rounded-lg text-white"
@@ -88,10 +92,13 @@ export default function Navbar({ user, profile }: NavbarProps) {
 
             {user ? (
               <div className="flex items-center gap-4">
-                <div className="flex flex-col items-end hidden sm:flex">
-                  <span className="text-sm font-medium">{profile?.displayName}</span>
-                  <span className="text-xs text-stone-500">Athlete</span>
-                </div>
+                <button 
+                  onClick={() => onNavigate('profile')}
+                  className="flex flex-col items-end hidden sm:flex hover:text-emerald-600 transition-colors"
+                >
+                  <span className="text-sm font-bold">{profile?.displayName}</span>
+                  <span className="text-[10px] text-stone-500 uppercase tracking-widest font-black">View Profile</span>
+                </button>
                 <button 
                   onClick={handleLogout}
                   className="p-2 text-stone-600 hover:text-red-500 transition-colors"

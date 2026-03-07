@@ -32,6 +32,14 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export interface Activity {
+  id: string;
+  type: 'purchase' | 'like' | 'analysis';
+  item: string;
+  timestamp: string;
+  details?: string;
+}
+
 export const CATEGORIES = [
   "Running",
   "Cricket",
