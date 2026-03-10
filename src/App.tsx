@@ -11,6 +11,7 @@ import Chatbot from './components/Chatbot';
 import GearLab from './components/GearLab';
 import LiveFeed from './components/LiveFeed';
 import ProfilePage from './components/ProfilePage';
+import CartPage from './components/CartPage';
 import { UserProfile } from './types';
 import { useCart } from './context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -20,7 +21,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'home' | 'profile'>('home');
+  const [view, setView] = useState<'home' | 'profile' | 'cart'>('home');
 
   useEffect(() => {
     // Seed initial data
@@ -100,8 +101,10 @@ export default function App() {
                 <ProductGrid user={user} profile={profile} />
               </section>
             </motion.div>
-          ) : (
+          ) : view === 'profile' ? (
             profile && <ProfilePage profile={profile} onBack={() => setView('home')} />
+          ) : (
+            <CartPage onBack={() => setView('home')} />
           )}
         </AnimatePresence>
       </main>

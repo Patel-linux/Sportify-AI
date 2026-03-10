@@ -10,7 +10,7 @@ import { useCart } from '../context/CartContext';
 interface NavbarProps {
   user: User | null;
   profile: UserProfile | null;
-  onNavigate: (view: 'home' | 'profile') => void;
+  onNavigate: (view: 'home' | 'profile' | 'cart') => void;
 }
 
 export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
@@ -65,7 +65,7 @@ export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
             </motion.div>
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold tracking-tighter text-stone-900">SPORTIFY AI</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded border border-emerald-200">v2.0.0</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded border border-emerald-200">v2.2.0</span>
             </div>
           </div>
 
@@ -81,7 +81,10 @@ export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
           </div>
 
           <div className="flex items-center gap-6">
-            <button className="text-stone-600 hover:text-emerald-600 transition-colors relative">
+            <button 
+              onClick={() => onNavigate('cart')}
+              className="text-stone-600 hover:text-emerald-600 transition-colors relative"
+            >
               <ShoppingCart size={24} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">

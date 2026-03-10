@@ -40,6 +40,20 @@ export interface Activity {
   details?: string;
 }
 
+export interface Message {
+  role: 'user' | 'model';
+  text: string;
+  timestamp: string;
+}
+
+export interface ChatSession {
+  id: string;
+  title: string;
+  lastMessage: string;
+  timestamp: string;
+  messages: Message[];
+}
+
 export const CATEGORIES = [
   "Running",
   "Cricket",
