@@ -12,6 +12,7 @@ import GearLab from './components/GearLab';
 import LiveFeed from './components/LiveFeed';
 import ProfilePage from './components/ProfilePage';
 import CartPage from './components/CartPage';
+import FeaturedPage from './components/FeaturedPage';
 import { UserProfile } from './types';
 import { useCart } from './context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -21,7 +22,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'home' | 'profile' | 'cart'>('home');
+  const [view, setView] = useState<'home' | 'profile' | 'cart' | 'gearlab' | 'featured'>('home');
 
   useEffect(() => {
     // Seed initial data
@@ -74,7 +75,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-900">
       <LiveFeed />
-      <Navbar user={user} profile={profile} onNavigate={(v) => setView(v)} />
+      <Navbar user={user} profile={profile} onNavigate={(v) => setView(v)} activeView={view} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <AnimatePresence mode="wait">
@@ -86,8 +87,8 @@ export default function App() {
               exit={{ opacity: 0 }}
             >
               <Hero 
-                onShopNow={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-                onViewCategories={() => document.getElementById('gearlab')?.scrollIntoView({ behavior: 'smooth' })}
+                onShopNow={() => setView('featured')}
+                onViewCategories={() => setView('gearlab')}
               />
               
               <div id="gearlab">
@@ -97,14 +98,27 @@ export default function App() {
               <section id="shop" className="mt-12">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-3xl font-bold tracking-tight">Featured Equipment</h2>
+                  <button onClick={() => setView('featured')} className="text-emerald-600 font-bold hover:underline">View All</button>
                 </div>
                 <ProductGrid user={user} profile={profile} />
               </section>
             </motion.div>
           ) : view === 'profile' ? (
             profile && <ProfilePage profile={profile} onBack={() => setView('home')} />
-          ) : (
+          ) : view === 'cart' ? (
             <CartPage onBack={() => setView('home')} />
+          ) : view === 'gearlab' ? (
+            <div className="py-12">
+              <button 
+                onClick={() => setView('home')}
+                className="mb-8 text-sm font-bold text-stone-400 hover:text-stone-900 flex items-center gap-2 transition-colors"
+              >
+                ← Back to Dashboard
+              </button>
+              <GearLab onAddToCart={addToCart} />
+            </div>
+          ) : (
+            <FeaturedPage user={user} profile={profile} onBack={() => setView('home')} />
           )}
         </AnimatePresence>
       </main>

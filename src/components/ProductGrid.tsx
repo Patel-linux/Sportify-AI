@@ -28,6 +28,16 @@ export default function ProductGrid({ user, profile }: ProductGridProps) {
   return (
     <div>
       <div className="flex flex-wrap gap-2 mb-8">
+        <button
+          onClick={() => setSelectedCategory(null)}
+          className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
+            !selectedCategory 
+              ? 'bg-emerald-500 text-stone-900 shadow-lg shadow-emerald-500/20' 
+              : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
+          }`}
+        >
+          All Gear
+        </button>
         {CATEGORIES.map(cat => (
           <button
             key={cat}
@@ -41,16 +51,6 @@ export default function ProductGrid({ user, profile }: ProductGridProps) {
             {cat}
           </button>
         ))}
-        <button
-          onClick={() => setSelectedCategory(null)}
-          className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-            !selectedCategory 
-              ? 'bg-emerald-500 text-stone-900 shadow-lg shadow-emerald-500/20' 
-              : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
-          }`}
-        >
-          All Gear
-        </button>
       </div>
 
       {loading ? (

@@ -3,17 +3,18 @@ import { User } from 'firebase/auth';
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { UserProfile } from '../types';
-import { Trophy, ShoppingCart, User as UserIcon, LogOut, Search } from 'lucide-react';
+import { Trophy, ShoppingCart, User as UserIcon, LogOut, Search, BrainCircuit, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '../context/CartContext';
 
 interface NavbarProps {
   user: User | null;
   profile: UserProfile | null;
-  onNavigate: (view: 'home' | 'profile' | 'cart') => void;
+  onNavigate: (view: 'home' | 'profile' | 'cart' | 'gearlab' | 'featured') => void;
+  activeView: string;
 }
 
-export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
+export default function Navbar({ user, profile, onNavigate, activeView }: NavbarProps) {
   const { cartCount } = useCart();
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [loginError, setLoginError] = React.useState<string | null>(null);
@@ -69,7 +70,16 @@ export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
             </div>
           </div>
 
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="hidden lg:flex items-center gap-8 mx-8">
+            <button 
+              onClick={() => onNavigate('home')}
+              className={`text-sm font-bold uppercase tracking-widest transition-colors ${activeView === 'home' ? 'text-emerald-600' : 'text-stone-500 hover:text-stone-900'}`}
+            >
+              Shop
+            </button>
+          </div>
+
+          <div className="hidden md:flex flex-1 max-w-xs mx-4">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
               <input 
@@ -82,19 +92,41 @@ export default function Navbar({ user, profile, onNavigate }: NavbarProps) {
 
           <div className="flex items-center gap-6">
             <button 
-              onClick={() => onNavigate('cart')}
-              className="text-stone-600 hover:text-emerald-600 transition-colors relative"
+              onClick={() => onNavigate('gearlab')}
+              className={`flex flex-col items-center transition-colors ${activeView === 'gearlab' ? 'text-emerald-600' : 'text-stone-500 hover:text-emerald-600'}`}
+              title="Pro Gear Lab"
             >
-              <ShoppingCart size={24} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
+              <BrainCircuit size={22} />
+              <span className="text-[9px] font-bold uppercase tracking-tighter mt-0.5">Pro Lab</span>
+            </button>
+
+            <button 
+              onClick={() => onNavigate('featured')}
+              className={`flex flex-col items-center transition-colors ${activeView === 'featured' ? 'text-emerald-600' : 'text-stone-500 hover:text-emerald-600'}`}
+              title="Featured Equipment"
+            >
+              <Sparkles size={22} />
+              <span className="text-[9px] font-bold uppercase tracking-tighter mt-0.5">Featured</span>
+            </button>
+
+            <button 
+              onClick={() => onNavigate('cart')}
+              className={`flex flex-col items-center transition-colors relative ${activeView === 'cart' ? 'text-emerald-600' : 'text-stone-500 hover:text-emerald-600'}`}
+              title="Cart"
+            >
+              <div className="relative">
+                <ShoppingCart size={22} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-[9px] font-bold uppercase tracking-tighter mt-0.5">Cart</span>
             </button>
 
             {user ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 border-l border-stone-200 pl-4 ml-2">
                 <button 
                   onClick={() => onNavigate('profile')}
                   className="flex flex-col items-end hidden sm:flex hover:text-emerald-600 transition-colors"
