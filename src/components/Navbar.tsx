@@ -66,7 +66,7 @@ export default function Navbar({ user, profile, onNavigate, activeView }: Navbar
             </motion.div>
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold tracking-tighter text-stone-900">SPORTIFY AI</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded border border-emerald-200">v2.2.0</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded border border-emerald-200">v4.2.0</span>
             </div>
           </div>
 
