@@ -1,60 +1,80 @@
 {
   "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user information and preferences.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique identifier for the user." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "favorites": { "type": "array", "items": { "type": "string" }, "description": "List of favorite product IDs." },
+        "preferences": { "type": "array", "items": { "type": "string" }, "description": "User's sports preferences." }
+      },
+      "required": ["uid", "displayName", "email"]
+    },
     "Product": {
       "title": "Product",
-      "description": "A sports equipment product",
+      "description": "Represents a sports equipment item.",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Product name" },
-        "brand": { "type": "string", "description": "Brand name" },
-        "category": { "type": "string", "description": "Sports category (e.g., Cricket, Football)" },
-        "price": { "type": "number", "description": "Price in USD" },
-        "rating": { "type": "number", "description": "Average rating (1-5)" },
-        "reviewsCount": { "type": "integer", "description": "Number of reviews" },
-        "description": { "type": "string", "description": "Product description" },
-        "imageUrl": { "type": "string", "description": "URL to product image" },
-        "features": { "type": "array", "items": { "type": "string" }, "description": "Key features" }
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "brand": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "features": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["name", "brand", "category", "price", "rating"]
+      "required": ["id", "name", "price", "category"]
     },
-    "UserProfile": {
-      "title": "UserProfile",
-      "description": "User account information",
+    "CartItem": {
+      "title": "Cart Item",
+      "description": "An item in the user's shopping cart.",
       "type": "object",
       "properties": {
-        "displayName": { "type": "string" },
-        "email": { "type": "string" },
-        "favorites": { "type": "array", "items": { "type": "string" }, "description": "List of product IDs" },
-        "preferences": { "type": "array", "items": { "type": "string" }, "description": "Preferred sports categories" }
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "quantity": { "type": "number" },
+        "imageUrl": { "type": "string" }
       },
-      "required": ["email"]
+      "required": ["id", "name", "price", "quantity"]
     },
     "Order": {
       "title": "Order",
-      "description": "User purchase history",
+      "description": "A completed purchase record.",
       "type": "object",
       "properties": {
+        "id": { "type": "string" },
         "userId": { "type": "string" },
         "productId": { "type": "string" },
         "productName": { "type": "string" },
         "price": { "type": "number" },
         "timestamp": { "type": "string", "format": "date-time" }
       },
-      "required": ["userId", "productId", "price", "timestamp"]
+      "required": ["id", "userId", "productId", "price", "timestamp"]
     }
   },
   "firestore": {
-    "/products/{productId}": {
-      "schema": "Product",
-      "description": "Collection of sports equipment"
-    },
     "/users/{userId}": {
       "schema": "UserProfile",
-      "description": "User profiles and settings"
+      "description": "User profile data."
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Product catalog data."
+    },
+    "/users/{userId}/cart/{itemId}": {
+      "schema": "CartItem",
+      "description": "User's shopping cart items."
     },
     "/orders/{orderId}": {
       "schema": "Order",
-      "description": "Purchase history"
+      "description": "Global order history."
     }
   }
 }
