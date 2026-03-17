@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Product, CartItem } from '../types';
 import { auth, db } from '../firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { collection, onSnapshot, doc, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../services/firestoreError';
 
@@ -18,28 +19,34 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [user, setUser] = useState<User | null>(auth.currentUser);
 
   // Sync with Firestore
   useEffect(() => {
-    const user = auth.currentUser;
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+
     if (!user) {
       setCart([]);
-      return;
+      return () => unsubscribeAuth();
     }
 
     const cartRef = collection(db, 'users', user.uid, 'cart');
-    const unsubscribe = onSnapshot(cartRef, (snapshot) => {
+    const unsubscribeSnapshot = onSnapshot(cartRef, (snapshot) => {
       const items = snapshot.docs.map(doc => doc.data() as CartItem);
       setCart(items);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, `users/${user.uid}/cart`);
     });
 
-    return () => unsubscribe();
-  }, [auth.currentUser]);
+    return () => {
+      unsubscribeAuth();
+      unsubscribeSnapshot();
+    };
+  }, [user]);
 
   const addToCart = async (product: Product) => {
-    const user = auth.currentUser;
     if (!user) {
       // Local only if not logged in
       setCart(prevCart => {
@@ -66,7 +73,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFromCart = async (productId: string) => {
-    const user = auth.currentUser;
     if (!user) {
       setCart(prevCart => prevCart.filter(item => item.id !== productId));
       return;
@@ -86,7 +92,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const user = auth.currentUser;
     if (!user) {
       setCart(prevCart => prevCart.map(item => 
         item.id === productId ? { ...item, quantity } : item
@@ -106,7 +111,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const clearCart = async () => {
-    const user = auth.currentUser;
     if (!user) {
       setCart([]);
       return;

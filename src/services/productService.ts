@@ -48,7 +48,7 @@ export const seedProducts = async () => {
       rating: 9.6,
       reviewsCount: 150,
       description: "High-performance running shoes with advanced cushioning.",
-      imageUrl: "https://picsum.photos/seed/shoes/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800",
       features: ["Breathable mesh", "Responsive foam", "Durable rubber sole"]
     },
     {
@@ -59,7 +59,7 @@ export const seedProducts = async () => {
       rating: 9.4,
       reviewsCount: 95,
       description: "Rugged trail running shoes for all-terrain performance.",
-      imageUrl: "https://picsum.photos/seed/trail/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800",
       features: ["Gore-Tex waterproof", "Deep lug traction", "Reinforced toe cap"]
     },
     {
@@ -70,7 +70,7 @@ export const seedProducts = async () => {
       rating: 9.8,
       reviewsCount: 210,
       description: "Ultra-lightweight marathon shoes with carbon plate technology.",
-      imageUrl: "https://picsum.photos/seed/cloud/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=800",
       features: ["Carbon fiber plate", "Super-critical foam", "Minimalist upper"]
     },
     {
@@ -81,7 +81,7 @@ export const seedProducts = async () => {
       rating: 9.8,
       reviewsCount: 85,
       description: "Grade 1 English Willow bat for professional play.",
-      imageUrl: "https://picsum.photos/seed/cricket/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=800",
       features: ["Large sweet spot", "Lightweight pickup", "Premium grip"]
     },
     {
@@ -92,7 +92,7 @@ export const seedProducts = async () => {
       rating: 9.0,
       reviewsCount: 200,
       description: "FIFA Quality Pro certified match ball.",
-      imageUrl: "https://picsum.photos/seed/football/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1614632537423-1e6c2e7a0aab?auto=format&fit=crop&q=80&w=800",
       features: ["Textured surface", "High air retention", "Consistent flight"]
     },
     {
@@ -103,7 +103,7 @@ export const seedProducts = async () => {
       rating: 9.4,
       reviewsCount: 320,
       description: "Rubber-coated hex dumbbells for home and gym use.",
-      imageUrl: "https://picsum.photos/seed/gym/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&q=80&w=800",
       features: ["Anti-roll design", "Comfortable grip", "Floor protection"]
     },
     {
@@ -114,7 +114,7 @@ export const seedProducts = async () => {
       rating: 9.7,
       reviewsCount: 110,
       description: "Professional grade tennis racket with vibration dampening.",
-      imageUrl: "https://picsum.photos/seed/tennis/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1622279457486-62dcc4a4bd13?auto=format&fit=crop&q=80&w=800",
       features: ["Graphite frame", "Large head size", "Balanced weight"]
     },
     {
@@ -125,7 +125,7 @@ export const seedProducts = async () => {
       rating: 9.5,
       reviewsCount: 180,
       description: "High-top basketball shoes with superior ankle support.",
-      imageUrl: "https://picsum.photos/seed/basketball/400/400",
+      imageUrl: "https://images.unsplash.com/photo-1543508282-6319a3e2621f?auto=format&fit=crop&q=80&w=800",
       features: ["Air cushion", "Non-slip grip", "Breathable fabric"]
     }
   ];

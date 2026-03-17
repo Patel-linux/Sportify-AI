@@ -38,11 +38,17 @@
       "properties": {
         "id": { "type": "string" },
         "name": { "type": "string" },
+        "brand": { "type": "string" },
+        "category": { "type": "string" },
         "price": { "type": "number" },
-        "quantity": { "type": "number" },
-        "imageUrl": { "type": "string" }
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "features": { "type": "array", "items": { "type": "string" } },
+        "quantity": { "type": "number" }
       },
-      "required": ["id", "name", "price", "quantity"]
+      "required": ["id", "name", "price", "quantity", "category"]
     },
     "Order": {
       "title": "Order",

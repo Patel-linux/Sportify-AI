@@ -56,7 +56,7 @@ export default function Hero({ onShopNow, onViewCategories }: HeroProps) {
         >
           <div className="relative z-10 rounded-2xl overflow-hidden border border-stone-700 shadow-2xl">
             <img 
-              src="https://picsum.photos/seed/athlete/800/600" 
+              src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800" 
               alt="Athlete" 
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
               referrerPolicy="no-referrer"

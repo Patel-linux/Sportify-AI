@@ -111,7 +111,7 @@ service cloud.firestore {
     }
 
     function isValidCartItem(data) {
-      return hasOnlyAllowedFields(['id', 'name', 'price', 'quantity', 'imageUrl']) &&
+      return hasOnlyAllowedFields(['id', 'name', 'brand', 'category', 'price', 'rating', 'reviewsCount', 'description', 'imageUrl', 'features', 'quantity']) &&
              data.id is string &&
              data.name is string && data.name.size() > 0 &&
              data.price is number && data.price >= 0 &&
