@@ -1,17 +1,11 @@
 pipeline {
-    agent any
-
-    tools {
-        nodejs "NodeJS"
+    agent {
+        docker {
+            image 'node:20'
+        }
     }
 
     stages {
-
-        stage('Clone') {
-            steps {
-                git branch: 'main', url: 'https://github.com/yourusername/projectname.git'
-            }
-        }
 
         stage('Install Dependencies') {
             steps {
@@ -19,13 +13,13 @@ pipeline {
             }
         }
 
-        stage('Build React App') {
+        stage('Build App') {
             steps {
                 sh 'npm run build'
             }
         }
 
-        stage('Start Server') {
+        stage('Success') {
             steps {
                 sh 'echo Build Successful'
             }
