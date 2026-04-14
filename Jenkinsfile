@@ -1,12 +1,15 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:20'
+        }
+    }
 
     stages {
 
         stage('Clone') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/Patel-linux/Sportify-AI.git'
+                checkout scm
             }
         }
 
@@ -21,7 +24,6 @@ pipeline {
                 sh 'npm run build'
             }
         }
-
     }
 }
        
