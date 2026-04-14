@@ -1,25 +1,69 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "sportify-ai"
+        CONTAINER_NAME = "sportify-ai-container"
+        PORT = "3000"
+    }
+
     stages {
 
-        stage('Clone') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/Patel-linux/Sportify-AI.git'
+                url: 'https://github.com/Patel-linux/Sportify-AI.git'
             }
         }
 
-        stage('Install & Build (Docker Node)') {
+        stage('Stop Old Container') {
             steps {
                 sh '''
-                    docker run --rm \
-                    -v $WORKSPACE:/app \
-                    -w /app \
-                    node:20 \
-                    bash -c "npm install && npm run build"
+                docker stop $CONTAINER_NAME || true
+                docker rm $CONTAINER_NAME || true
                 '''
             }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                docker build -t $IMAGE_NAME .
+                '''
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh '''
+                docker run -d \
+                  --name $CONTAINER_NAME \
+                  -p $PORT:3000 \
+                  $IMAGE_NAME
+                '''
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                sh '''
+                docker ps | grep $CONTAINER_NAME
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "🚀 Deployment Successful!"
+        }
+
+        failure {
+            echo "❌ Deployment Failed"
+        }
+
+        always {
+            echo "✔ Pipeline execution completed"
         }
     }
 }
