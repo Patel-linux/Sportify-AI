@@ -1,11 +1,13 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:20'
-        }
-    }
+    agent any
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Install Dependencies') {
             steps {
