@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "sportify-ai"
         CONTAINER_NAME = "sportify-ai-container"
-        PORT = "3000"
+        PORT = "3001"
     }
 
     stages {
@@ -38,7 +38,7 @@ pipeline {
                 sh '''
                 docker run -d \
                   --name $CONTAINER_NAME \
-                  -p $PORT:3000 \
+                  -p $PORT:3001 \
                   $IMAGE_NAME
                 '''
             }
