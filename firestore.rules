@@ -1,0 +1,174 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: userId (UID)
+    // Fields:
+    //   - uid: string (required) - The user's unique ID
+    //   - displayName: string (required) - The user's name
+    //   - email: string (required, email format) - The user's email
+    //   - favorites: list (optional) - List of product IDs
+    //   - preferences: list (optional) - User's sports preferences
+    //
+    // Collection: products
+    // Document ID: productId
+    // Fields:
+    //   - id: string (required)
+    //   - name: string (required)
+    //   - brand: string (required)
+    //   - category: string (required)
+    //   - price: number (required, positive)
+    //   - rating: number (required)
+    //   - reviewsCount: number (required)
+    //   - description: string (required)
+    //   - imageUrl: string (required, URL format)
+    //   - features: list (required)
+    //
+    // Collection: users/{userId}/cart
+    // Document ID: itemId (Product ID)
+    // Fields:
+    //   - id: string (required)
+    //   - name: string (required)
+    //   - price: number (required, positive)
+    //   - quantity: number (required, positive)
+    //   - imageUrl: string (required, URL format)
+    //
+    // Collection: orders
+    // Document ID: orderId
+    // Fields:
+    //   - id: string (required)
+    //   - userId: string (required)
+    //   - productId: string (required)
+    //   - productName: string (required)
+    //   - price: number (required, positive)
+    //   - timestamp: string (required, ISO 8601)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "pranaypatel176@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    function isValidDateString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$");
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['uid', 'displayName', 'email', 'favorites', 'preferences', 'role']) &&
+             data.uid == request.auth.uid &&
+             data.displayName is string && data.displayName.size() > 0 && data.displayName.size() < 100 &&
+             isValidEmail(data.email) &&
+             (!('favorites' in data) || data.favorites is list) &&
+             (!('preferences' in data) || data.preferences is list);
+    }
+
+    function isValidProduct(data) {
+      return hasOnlyAllowedFields(['id', 'name', 'brand', 'category', 'price', 'rating', 'reviewsCount', 'description', 'imageUrl', 'features']) &&
+             data.id is string && data.id.size() > 0 &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 200 &&
+             data.brand is string &&
+             data.category is string &&
+             data.price is number && data.price >= 0 &&
+             data.rating is number && data.rating >= 0 && data.rating <= 5 &&
+             data.reviewsCount is number && data.reviewsCount >= 0 &&
+             data.description is string && data.description.size() < 2000 &&
+             isValidUrl(data.imageUrl) &&
+             data.features is list;
+    }
+
+    function isValidCartItem(data) {
+      return hasOnlyAllowedFields(['id', 'name', 'brand', 'category', 'price', 'rating', 'reviewsCount', 'description', 'imageUrl', 'features', 'quantity']) &&
+             data.id is string &&
+             data.name is string && data.name.size() > 0 &&
+             data.price is number && data.price >= 0 &&
+             data.quantity is number && data.quantity > 0 &&
+             isValidUrl(data.imageUrl);
+    }
+
+    function isValidOrder(data) {
+      return hasOnlyAllowedFields(['id', 'userId', 'productId', 'productName', 'price', 'timestamp']) &&
+             data.id is string &&
+             data.userId == request.auth.uid &&
+             data.productId is string &&
+             data.productName is string &&
+             data.price is number && data.price >= 0 &&
+             isValidDateString(data.timestamp);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      // Users can only read their own profile (PII protection)
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Create: user must be owner, role must be 'user' (unless admin)
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && 
+                      (request.resource.data.role == 'user' || isAdmin());
+      
+      // Update: user must be owner, cannot change role (unless admin)
+      allow update: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && 
+                      (request.resource.data.role == resource.data.role || isAdmin());
+      
+      allow delete: if isAdmin();
+
+      match /cart/{itemId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) && isValidCartItem(request.resource.data);
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    match /products/{productId} {
+      allow read: if true; // Products are public
+      allow write: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      // Users can only read their own orders
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidOrder(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
