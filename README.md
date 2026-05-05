@@ -26,7 +26,7 @@ The platform leverages modern web technologies along with Gemini AI integration 
 
 This repository contains the complete source code required to run the application locally and deploy it seamlessly.
 
-🚀 Live Application
+Live Application
 
 You can view the deployed application directly on AI Studio:
 
